@@ -77,6 +77,7 @@ function fruitClick(event){
 // отрисовка карточек
 const display = () => {
   let checkClass = '';
+  let bgColor;
   // TODO: очищаем fruitsList от вложенных элементов,
   // чтобы заполнить актуальными данными из fruits
   fruitsList.innerHTML = '';
@@ -90,7 +91,8 @@ const display = () => {
       oneFruit.className +=  ' fruit__item__checked';
     }
     oneFruit.id = 'fruit_' + fruits[i].id;
-    oneFruit.style.background = colorRGB.get(fruits[i].color);
+    bgColor = colorRGB.get(fruits[i].color);
+    oneFruit.style.background = !bgColor ? '#96969d' : bgColor;
     oneFruit.innerHTML = `<div class="fruit__info">
     <div>index: ${i}</div>
     <div>id: ${fruits[i].id}</div>
@@ -193,12 +195,30 @@ let sortKind = 'bubbleSort'; // инициализация состояния в
 let sortTime = '-'; // инициализация состояния времени сортировки
 
 const comparationColor = (a, b) => {
-  //console.log(a);
-  //console.log(b);
+  if (!a) {
+    return true;
+  }
+  else if (!b) {
+    return false;
+  }
+  if (a.color == b.color) {
+    return a.id < b.id;
+  }
+
+  let aColor = colorRGB.get(a.color);
+  let bColor = colorRGB.get(b.color);
+  
+  if (!aColor) {
+    return true;
+  }
+  if (!bColor) {
+    return false;
+  }
 
   // TODO: допишите функцию сравнения двух элементов по цвету
-  const aNum = Number(colorRGB.get(a.color).replace('#', '0x'));
-  const bNum = Number(colorRGB.get(b.color).replace('#', '0x'));
+  const aNum = Number(aColor.replace('#', '0x'));
+  const bNum = Number(bColor.replace('#', '0x'));
+  
   return aNum < bNum;
 };
 
@@ -235,10 +255,10 @@ const sortAPI = {
         i = left,
         j = right;
       while (i <= j) {
-        while (comparation(pivot, items[i])) {
+        while (i <= j && comparation(pivot, items[i])) {
           i++;
         }
-        while (comparation(items[j], pivot)) {
+        while (i <= j && comparation(items[j], pivot)) {
           j--;
         }
         if (i <= j) {
@@ -303,8 +323,8 @@ sortActionButton.addEventListener('click', () => {
 function nextID(arr){
   let id = 0;
   for (let i=0; i < arr.length; i++){
-    if (id < arr[i].id){
-      id = arr[i].id;
+    if (id < Number(arr[i].id)){
+      id = Number(arr[i].id);
     }
   }
   return id + 1;
@@ -313,10 +333,28 @@ function nextID(arr){
 addActionButton.addEventListener('click', () => {
   // TODO: создание и добавление нового фрукта в массив fruits
   // необходимые значения берем из kindInput, colorInput, weightInput
+  // проверки заполнения полей
   let kindInputValue = kindInput.value;
+  if (!kindInputValue) {
+    alert('Заполните поле "kind:"!');
+    return;
+  }
   kindInputValue = kindInputValue.charAt(0).toUpperCase() + kindInputValue.slice(1).toLowerCase();
   const colorInputValue = colorInput.value;
+  if (!colorInputValue) {
+    alert('Заполните поле "color:"!');
+    return;
+  }
   const weightInputValue = Number(weightInput.value);
+  if (!weightInputValue) {
+    alert('Заполните поле "weight:"!');
+    return;
+  }
+  // проверка на уникальность по типу
+  if (fruits.some((fruit => fruit.kind == kindInputValue))) {
+    alert(kindInputValue + ' уже есть в списке!');
+    return;
+  }
   fruits.push({
     "id": nextID(fruits),
     "kind": kindInputValue,
