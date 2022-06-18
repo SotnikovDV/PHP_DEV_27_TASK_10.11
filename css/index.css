@@ -30,7 +30,9 @@ button {
   text-align: center;
   text-decoration: none;
   display: inline-block;
-  max-width: fit-content;
+  /*max-width: fit-content;*/
+  max-width: 200px;
+  cursor: pointer;
 }
 
 input {
@@ -73,7 +75,7 @@ main {
 .panel__wrapper {
   flex-basis: 25%;
   max-height: inherit;
-  overflow: hidden;
+  /*overflow: hidden;*/
   background: aliceblue;
   display: flex;
   flex-direction: column;
@@ -113,6 +115,14 @@ main {
   width: fit-content;
   height: 100px;
   border-radius: 10px;
+  cursor: cell;
+}
+
+.fruit__item__checked {
+  border-color: #96969d;
+  border-width: 4px;
+  border-style: dotted;
+  
 }
 
 .fruit_violet {
@@ -121,6 +131,7 @@ main {
 
 .fruit_green {
   background: #84cd1b;
+  
 }
 
 .fruit_carmazin {
